@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webpart xmlns="http://labkey.org/data/xml/webpart">
+    <view name="npodtop10"/>
+    <locations>
+        <location name="right"/>
+        <location name="body"/>
+        <location name="menu"/>
+    </locations>
+</webpart>

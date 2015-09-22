@@ -1,0 +1,13 @@
+-- Query:  study.DonorSpecimenSearch
+
+SELECT DISTINCT  
+SpecimenDetail.nPODCaseID.nPODCaseID, 
+SpecimenDetail.nPODCaseID.DataSet.Demographics.DonorType, 
+SpecimenDetail.nPODCaseID.DataSet.Demographics.oppc_Ethnicity, 
+SpecimenDetail.nPODCaseID.DataSet.Demographics.oppc_Gender, 
+SpecimenDetail.nPODCaseID.DataSet.Demographics.oppc_ageR, 
+SpecimenDetail.nPODCaseID.DataSet.Demographics.oppc_bmiR 
+--SpecimenDetail.PrimaryType, 
+--SpecimenDetail.DerivativeType 
+
+FROM SpecimenDetail

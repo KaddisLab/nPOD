@@ -1,0 +1,13 @@
+-- Top10AliquotTypes
+
+SELECT 
+   SpecimenDetail.DerivativeType.Description,
+   COUNT(SpecimenDetail.DerivativeType) AS DerivativeTypeCount,
+FROM 
+	SpecimenDetail
+WHERE
+	Available = True
+GROUP BY
+	SpecimenDetail.DerivativeType.Description
+ORDER BY
+	DerivativeTypeCount DESC LIMIT 10

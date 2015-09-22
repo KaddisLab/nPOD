@@ -1,0 +1,95 @@
+--
+-- Active Projects query
+--
+--     Gather all projects related to requested specimens
+--     and associated cases through the user/project relationship.
+--
+--     Needed to split into separate queries to eliminate duplicates.
+
+SELECT 
+
+  Distinct
+  record_id nPODCaseID,
+  project_titles ProjectTitle, 
+  Investigator fullname, 
+  Email, 
+  Office_phone, 
+  Category1
+  -- Folder_name 
+FROM 
+  lists.Studies 
+
+UNION
+
+SELECT 
+
+  Distinct 
+--  VialRequest.Request as RequestId,
+--  VialRequest.Request.CreatedBy as RequestedBy,
+--  Users.UserId as RequestedByUserId,
+
+  CAST(VialRequest.Vial.nPODCaseID AS VARCHAR) nPODCaseID,
+
+  --Users.nPOD_Project_ID_1.Proj_ID ,
+  Users.nPOD_Project_ID_1.ProjectTitle,
+  --Users.nPOD_Project_ID_1.PI_ID.Salutation,
+  Users.nPOD_Project_ID_1.PI_ID.fullname,
+  Users.nPOD_Project_ID_1.PI_ID.Email, 
+  Users.nPOD_Project_ID_1.PI_ID.Office_Phone,    
+  Users.nPOD_Project_ID_1.CatID.CategoryName Category1
+
+FROM 
+   VialRequest JOIN core.Users
+    ON VialRequest.Request.CreatedBy = Users.UserId
+WHERE
+   Users.nPOD_Project_ID_1.Status = 'Active'
+
+UNION
+
+SELECT 
+
+  Distinct 
+--  VialRequest.Request as RequestId,
+--  VialRequest.Request.CreatedBy as RequestedBy,
+--  Users.UserId as RequestedByUserId,
+
+  CAST(VialRequest.Vial.nPODCaseID AS VARCHAR) nPODCaseID,
+
+  --Users.nPOD_Project_ID_2.Proj_ID ,
+  Users.nPOD_Project_ID_2.ProjectTitle,
+  --Users.nPOD_Project_ID_2.PI_ID.Salutation,
+  Users.nPOD_Project_ID_2.PI_ID.fullname,
+  Users.nPOD_Project_ID_2.PI_ID.Email, 
+  Users.nPOD_Project_ID_2.PI_ID.Office_Phone,    
+  Users.nPOD_Project_ID_2.CatID.CategoryName Category1
+
+FROM 
+   VialRequest JOIN core.Users
+    ON VialRequest.Request.CreatedBy = Users.UserId
+WHERE
+   Users.nPOD_Project_ID_2.Status = 'Active'   
+    
+UNION
+
+SELECT 
+
+  Distinct 
+--  VialRequest.Request as RequestId,
+--  VialRequest.Request.CreatedBy as RequestedBy,
+--  Users.UserId as RequestedByUserId,
+
+  CAST(VialRequest.Vial.nPODCaseID AS VARCHAR) nPODCaseID,
+
+  --Users.nPOD_Project_ID_3.Proj_ID ,
+  Users.nPOD_Project_ID_3.ProjectTitle,
+  --Users.nPOD_Project_ID_3.PI_ID.Salutation,
+  Users.nPOD_Project_ID_3.PI_ID.fullname,
+  Users.nPOD_Project_ID_3.PI_ID.Email, 
+  Users.nPOD_Project_ID_3.PI_ID.Office_Phone,    
+  Users.nPOD_Project_ID_3.CatID.CategoryName Category1
+
+FROM 
+   VialRequest JOIN core.Users
+    ON VialRequest.Request.CreatedBy = Users.UserId
+WHERE
+   Users.nPOD_Project_ID_3.Status = 'Active'

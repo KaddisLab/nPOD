@@ -1,0 +1,13 @@
+-- Top10Cases
+
+SELECT 
+   SpecimenDetail.nPODCaseID,
+   COUNT(SpecimenDetail.nPODCaseID) AS CaseCount,
+FROM 
+	SpecimenDetail
+WHERE
+	Available = True
+GROUP BY
+	SpecimenDetail.nPODCaseID
+ORDER BY
+	CaseCount DESC LIMIT 10

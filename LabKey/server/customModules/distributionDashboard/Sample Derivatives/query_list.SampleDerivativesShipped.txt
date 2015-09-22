@@ -1,0 +1,37 @@
+-- Query:  "Sample Derivatives Shipped"
+
+SELECT 
+SampleDerivativesQuery.vialid,
+SampleDerivativesQuery.VialRowId,
+SampleDerivativesQuery.inventory_vialID,
+SampleDerivativesQuery.RequestIdReference,
+SampleDerivativesQuery.RequestId,
+SampleDerivativesQuery.RequestStatus,
+SampleDerivativesQuery.SampleID,
+SampleDerivativesQuery.CaseID,
+SampleDerivativesQuery.AliqID,
+SampleDerivativesQuery.AliquotNumber,
+SampleDerivativesQuery.DerivID,
+SampleDerivativesQuery.DerivNumber,
+SampleDerivativesQuery.Dist_ID,
+SampleDerivativesQuery.CRN,
+SampleDerivativesQuery.ShipDate,
+SampleDerivativesQuery.Status,
+SampleDerivativesQuery.Comments
+FROM 
+  SampleDerivativesQuery
+WHERE
+   ( 
+     ( RequestId IS NULL
+        AND
+      Dist_ID IS NOT NULL )
+       AND
+     (CRN IS NOT NULL OR ShipDate IS NOT NULL )
+      
+   )
+     OR 
+   ( 
+     ( RequestId >= 2000 AND UCASE(RequestStatus) = 'ORDER SHIPPED' )
+       AND
+     (CRN IS NOT NULL OR ShipDate IS NOT NULL )
+   )

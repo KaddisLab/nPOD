@@ -1,0 +1,26 @@
+-- Query:  PrintRequestSpecimens
+
+SELECT
+	VialRequest.Request.RequestId,  
+	VialRequest.Vial.nPODCaseID,  
+	VialRequest.Vial.nPODCaseID.DataSet.Demographics.DonorType,  
+	VialRequest.Vial.PrimaryType as SampleType,  
+	VialRequest.Vial.DerivativeType as AliquotType,  
+	VialRequest.Vial.ProtocolNumber as "Block Nbr",  
+	 
+	CASE WHEN (VialRequest.Vial.Volume IS NOT NULL)  
+	THEN  
+		( 'VID- ' || CAST(VialRequest.Vial.RowId as VARCHAR)  
+			||  '-Vol- ' || CAST(VialRequest.Vial.Volume as VARCHAR) )  
+	ELSE  
+		( 'VID- ' || CAST(VialRequest.Vial.RowId as VARCHAR)  
+			||  '-Vol-none ' )  
+	END  
+		AS Vials,  
+	 
+	VialRequest.Vial.Fr_Level1 as Rack,  
+	VialRequest.Vial.Fr_Level2 as Box,  
+	VialRequest.Vial.Fr_Container as Row,  
+	VialRequest.Vial.Fr_Position as Column
+	  
+FROM VialRequest

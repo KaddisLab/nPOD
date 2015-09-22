@@ -1,0 +1,15 @@
+-- Donor_By_Group_Summary
+--    -LabKey SQL Query
+--    -Similar to R view (Donor_By_Group_Summary)
+
+SELECT 
+  Demographics.DonorType.DonorType,
+  COUNT(DonorType) DonorTypeFrequency,
+  MIN(Demographics.oppc_ageR) MinAge,
+  MAX(Demographics.oppc_ageR) MaxAge
+FROM 
+  Demographics
+GROUP BY
+  Demographics.DonorType.DonorType
+  
+  

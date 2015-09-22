@@ -1,0 +1,17 @@
+Property	Label	RangeURI	Format	NotNull	Hidden	MvEnabled	Description
+vialid	Vialid	http://www.w3.org/2001/XMLSchema#int		TRUE	FALSE	FALSE	
+CaseID	Case ID	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+SampleID	Sample ID	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+AliqID	Aliq ID	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+AliquotNumber	Block/Vial Number	http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+DerivID	Deriv ID	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+DerivNumber	Deriv Number	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+Dist_ID	Dist ID	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+CRN	CRN	http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+Status	Status	http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+Comments	Comments	http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+
+
+VialRowId	VialRowId	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+RequestId	RequestId	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+

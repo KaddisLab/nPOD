@@ -1,0 +1,49 @@
+/* 
+	NPOD script to change the STATE column 
+	on list.ExtendedSpecimen from NVARCHAR(4000)
+	to NVARCHAR(MAX)
+	
+	-The lists.ExtendedSpecimen.State column is 
+	a 'blob' type text data field describing slide
+	related sample request information.
+	
+	-TODO:
+		1) Specify DB
+		2) Specify/Uncomment ALTER list.[TABLENAME] for the environment.
+*/
+
+/* Specify DB 
+	Example:
+		USE [labkeydb-dev-1]
+		GO
+
+*/
+USE [npodlabkey]
+GO
+
+/*
+	Extended Specimen Table
+		Dev:	list.c21d2633_extendedspecimen
+		Stage:	list.c21d3582_extendedspecimen
+		Prod:	list.c21d1910_extendedspecimen
+
+		Example:
+			ALTER TABLE [list].[c76d1112_extendedspecimen] ALTER COLUMN [state] nvarchar(max);
+			GO
+
+*/
+
+/***************************************************/
+/* DEV */
+ALTER TABLE [list].[c21d2633_extendedspecimen] ALTER COLUMN [state] nvarchar(max);
+GO
+
+/***************************************************/
+/* STAGING */
+--	ALTER TABLE [list].[c21d3582_extendedspecimen] ALTER COLUMN [state] nvarchar(max);
+--	GO
+
+/***************************************************/
+/* PROD */
+--	ALTER TABLE [list].[c21d1910_extendedspecimen] ALTER COLUMN [state] nvarchar(max);
+--	GO

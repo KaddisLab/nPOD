@@ -1,0 +1,13 @@
+-- Top10SampleTypes
+
+SELECT 
+   SpecimenDetail.PrimaryType.Description,
+   COUNT(SpecimenDetail.PrimaryType) AS PrimaryTypeCount,
+FROM 
+	SpecimenDetail
+WHERE
+	Available = True
+GROUP BY
+	SpecimenDetail.PrimaryType.Description
+ORDER BY
+	PrimaryTypeCount DESC LIMIT 10

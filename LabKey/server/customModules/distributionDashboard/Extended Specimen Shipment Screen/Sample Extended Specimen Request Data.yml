@@ -1,0 +1,172 @@
+{
+	"blocks" : {
+		"0" : {
+			"PrimaryType" : {
+				"displayValue" : "PanHead",
+				"value" : 2217
+			},
+			"ProtocolNumber" : {
+				"value" : "01"
+			},
+			"RowId" : {
+				"value" : 67888
+			},
+			"nPODCaseID" : {
+				"value" : "6009"
+			},
+			"DerivativeType" : {
+				"displayValue" : "Paraffin",
+				"value" : 1043
+			},
+			"block" : "01",
+			"slides" : ""
+		},
+		"1" : {
+			"PrimaryType" : {
+				"displayValue" : "PanTail",
+				"value" : 2218
+			},
+			"ProtocolNumber" : {
+				"value" : "04"
+			},
+			"RowId" : {
+				"value" : 73058
+			},
+			"nPODCaseID" : {
+				"value" : "6012"
+			},
+			"DerivativeType" : {
+				"displayValue" : "OCT",
+				"value" : 1041
+			},
+			"block" : "04",
+			"slides" : ""
+		},
+		"2" : {
+			"PrimaryType" : {
+				"displayValue" : "PanHead",
+				"value" : 2217
+			},
+			"ProtocolNumber" : {
+				"value" : "01"
+			},
+			"RowId" : {
+				"value" : 74136
+			},
+			"nPODCaseID" : {
+				"value" : "6051"
+			},
+			"DerivativeType" : {
+				"displayValue" : "OCT-4% PF",
+				"value" : 1042
+			},
+			"block" : "01",
+			"slides" : ""
+		},
+		"3" : {
+			"PrimaryType" : {
+				"displayValue" : "PanHead",
+				"value" : 2217
+			},
+			"ProtocolNumber" : {
+				"value" : "02"
+			},
+			"RowId" : {
+				"value" : 85352
+			},
+			"nPODCaseID" : {
+				"value" : "6210"
+			},
+			"DerivativeType" : {
+				"displayValue" : "Paraffin-4% PF",
+				"value" : 1051
+			},
+			"block" : "02",
+			"slides" : ""
+		}
+	},
+	"snapfrozen" : {
+		"0" : {
+			"PrimaryType" : {
+				"displayValue" : "PanHead",
+				"value" : 2217
+			},
+			"ProtocolNumber" : {
+				"value" : "01"
+			},
+			"RowId" : {
+				"value" : 66256
+			},
+			"nPODCaseID" : {
+				"value" : "6002"
+			},
+			"DerivativeType" : {
+				"displayValue" : "Vial",
+				"value" : 1047
+			},
+			"numvials" : "1"
+		},
+		"1" : {
+			"PrimaryType" : {
+				"displayValue" : "Spleen",
+				"value" : 2220
+			},
+			"ProtocolNumber" : {
+				"value" : "07"
+			},
+			"RowId" : {
+				"value" : 66288
+			},
+			"nPODCaseID" : {
+				"value" : "6052"
+			},
+			"DerivativeType" : {
+				"displayValue" : "Vial RNALater",
+				"value" : 1048
+			},
+			"numvials" : "1"
+		}
+	},
+	"cell" : {
+		"0" : {
+			"PrimaryType" : {
+				"displayValue" : "Whole blood",
+				"value" : 2246
+			},
+			"ProtocolNumber" : {
+				"value" : "03"
+			},
+			"RowId" : {
+				"value" : 66601
+			},
+			"nPODCaseID" : {
+				"value" : "6083"
+			},
+			"DerivativeType" : {
+				"displayValue" : "PBMC",
+				"value" : 1045
+			},
+			"numcells" : "1"
+		},
+		"1" : {
+			"PrimaryType" : {
+				"displayValue" : "Thymus",
+				"value" : 2242
+			},
+			"ProtocolNumber" : {
+				"value" : "11"
+			},
+			"RowId" : {
+				"value" : 66342
+			},
+			"nPODCaseID" : {
+				"value" : "6120"
+			},
+			"DerivativeType" : {
+				"displayValue" : "Cells",
+				"value" : 1035
+			},
+			"numcells" : "1"
+		}
+	}
+}

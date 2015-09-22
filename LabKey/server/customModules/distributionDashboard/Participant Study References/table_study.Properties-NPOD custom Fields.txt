@@ -1,0 +1,8 @@
+Property	Label	RangeURI	Format	NotNull	Hidden	MvEnabled	Description
+Email		http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+Phone		http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+PMID		http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+Journal		http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+Year		http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+Authors		http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+Title		http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	

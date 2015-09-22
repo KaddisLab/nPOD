@@ -1,0 +1,82 @@
+<tables xmlns="http://labkey.org/data/xml">
+  <table tableName="SpecimenDetail" tableDbType="VIEW">
+    <columns>
+      <column columnName="ProtocolNumber">
+        <displayColumnFactory>
+          <className>org.labkey.api.data.JavaScriptDisplayColumnFactory</className>
+          <properties>
+            <property name="dependency">/nPOD/SpecimenPopup.js</property>
+            <property name="javaScriptEvents">onMouseOver="npodBlockPopup('${nPODCaseID}', '${primaryType}', '${ProtocolNumber}', '${primaryType/Description}',  '${derivativeType/Description}', this)"</property>
+          </properties>
+        </displayColumnFactory>
+        <columnTitle>Block/Vial Number</columnTitle>
+      </column>
+      <column columnName="PrimaryType">
+        <columnTitle>Sample Type</columnTitle>
+      </column>
+      <column columnName="DerivativeType">
+        <displayColumnFactory>
+          <className>org.labkey.api.data.JavaScriptDisplayColumnFactory</className>
+          <properties>
+            <property name="dependency">/nPOD/SpecimenPopup.js</property>
+            <property name="javaScriptEvents">onMouseOver="npodAliquotPopup('${nPODCaseID}', '${derivativeType/ExternalId}', '${derivativeType/Description}', this)"</property>
+          </properties>
+        </displayColumnFactory>
+        <columnTitle>Aliquot Type</columnTitle>
+      </column>
+      <column columnName="LatestComments">
+        <columnTitle>Comments</columnTitle>
+        <protected>true</protected>
+        <isHidden>true</isHidden>
+        <shownInInsertView>false</shownInInsertView>
+        <shownInDetailsView>false</shownInDetailsView>
+      </column>
+      <column columnName="nPODCaseID">
+        <columnTitle>nPOD CaseID</columnTitle>
+      </column>
+      <column columnName="VolumeUnits">
+        <columnTitle>Unit Type</columnTitle>
+      </column>
+      <column columnName="Freezer">
+        <columnTitle>Storage ID</columnTitle>
+      </column>
+      <column columnName="Fr_Container">
+        <columnTitle>Row</columnTitle>
+      </column>
+      <column columnName="Fr_Position">
+        <columnTitle>Column</columnTitle>
+      </column>
+      <column columnName="Fr_Level1">
+        <columnTitle>Rack</columnTitle>
+      </column>
+      <column columnName="Fr_Level2">
+        <columnTitle>Box</columnTitle>
+      </column>
+      <column columnName="LatestQualityComments">
+        <columnTitle>General Comments</columnTitle>
+      </column>
+      <column columnName="TubeType">
+        <columnTitle>OPPC Sample Status</columnTitle>
+        <dimension>true</dimension>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>List: Sample_Status</fkTable>
+          <fkColumnName>Tube_Type</fkColumnName>
+          <fkFolderPath>/nPOD DataShare</fkFolderPath>
+        </fk>
+      </column>
+    </columns>
+    <viewOptions>
+      <viewFilterItem type="Study.externalReport" enabled="true"/>
+      <viewFilterItem type="ReportService.GenericChartReport" enabled="false"/>
+      <viewFilterItem type="ReportService.chartQueryReport" enabled="false"/>
+      <viewFilterItem type="Study.chartQueryReport" enabled="false"/>
+      <viewFilterItem type="ReportService.crosstabReport" enabled="true"/>
+      <viewFilterItem type="ReportService.internalScriptEngineReport" enabled="false"/>
+      <viewFilterItem type="ReportService.JavaScriptReport" enabled="true"/>
+      <viewFilterItem type="Query Snapshot" enabled="true"/>
+      <viewFilterItem type="ReportService.GenericChartReport" enabled="false"/>
+      <viewFilterItem type="ReportService.TimeChartReport" enabled="false"/>
+    </viewOptions>
+  </table>
+</tables>

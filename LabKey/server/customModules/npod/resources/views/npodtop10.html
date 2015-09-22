@@ -1,0 +1,43 @@
+
+<script type="text/javascript">
+
+    /*
+     nPOD Top 10 Graphs
+
+     */
+
+   LABKEY.requiresExt4Sandbox(true);
+   LABKEY.requiresExt4ClientAPI(true);
+</script>
+
+
+<script type="text/javascript">
+
+    LABKEY.requiresScript("nPOD/NPODTop10Panel.js");
+
+</script>
+
+<div id="divNPODTop10Data"></div>
+<div id="divNPODTop10Cases"></div>
+<div id="divNPODTop10AliquotTypes"></div>
+<div id="divNPODTop10SampleTypes"></div>
+
+<script type="text/javascript">
+
+    Ext4.onReady(function() {
+
+        // Draw graphs after page load for a while.
+        var taskTop10Charts = new Ext.util.DelayedTask(function(){
+            Ext4.create('LABKEY.ext.NPODTop10Cases', { renderTo: 'divNPODTop10Cases'});
+            Ext4.create('LABKEY.ext.NPODTop10AliquotTypes', { renderTo: 'divNPODTop10AliquotTypes'});
+            Ext4.create('LABKEY.ext.NPODTop10SampleTypes', { renderTo: 'divNPODTop10SampleTypes'});
+        });
+
+        taskTop10Charts.delay(500);
+
+    });
+
+</script>
+
+
+

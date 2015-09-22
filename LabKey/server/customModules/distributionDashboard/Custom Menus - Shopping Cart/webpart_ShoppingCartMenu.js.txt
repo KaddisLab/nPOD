@@ -1,0 +1,84 @@
+<!--
+
+	NPOD Labkey Shopping Cart Menu List
+	
+	Name:	ShoppingCartMenu
+	Title:	"Shopping Cart"	
+
+-->
+
+
+<div id='topLinks'></div>
+
+<script type="text/javascript">
+
+	//--------------------------------------
+	// Shopping Cart Menu List
+
+	document.getElementById("topLinks").innerHTML += 
+		'<P>'
+		+ '<a href="' 
+		+ 'javascript:searchSamples();'
+		+ '" target="_self"' 
+		+ ' class="x-shoppingcart-list-item" ' 
+		+ '>Search&nbsp;NPOD&nbsp;Samples</a>' 
+		+ '<P>'
+		+ '<a href="' 
+		+ 'javascript:viewShoppingCart();'
+		+ '" target="_self"' 
+		+ ' class="x-shoppingcart-list-item" ' 
+		+ '>View&nbsp;Shopping&nbsp;Cart</a>' 
+		+ '<P>'
+		+ '<a href="' 
+		+ 'javascript:continueShopping();'
+		+ '" target="_self"' 
+		+ ' class="x-shoppingcart-list-item" ' 
+		+ '>Continue&nbsp;Shopping</a>'; 
+		
+	
+	// ---------------------------------------	
+	// Menu Functions
+	
+	var searchSamples = function() {
+
+		var destinationURL = LABKEY.ActionURL.buildURL(
+			'project', 
+			'begin', 
+			LABKEY.ActionURL.getContainer(), 
+			{pageId: 'study.SPECIMENS'}
+		);
+	
+		window.location = destinationURL;
+	
+	}
+
+	var viewShoppingCart = function() {
+
+		var destinationURL = LABKEY.ActionURL.buildURL(
+			'study-samples', 
+			'samples', 
+			LABKEY.ActionURL.getContainer(), 
+			{
+				showVials: true,
+				npodShowSelected : true
+			}	
+		);
+		
+		window.location = destinationURL;		
+	
+	}
+	
+	var continueShopping = function() {
+	
+		var destinationURL = LABKEY.ActionURL.buildURL(
+			'study-samples', 
+			'samples', 
+			LABKEY.ActionURL.getContainer(), 
+			{showVials: true}
+		);
+
+		window.location = destinationURL;
+		
+	}
+			
+</script>

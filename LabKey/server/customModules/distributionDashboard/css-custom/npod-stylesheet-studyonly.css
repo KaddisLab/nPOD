@@ -1,0 +1,12 @@
+.labkey-main-menu-item { position: relative; top: -50px; left: 77%; width: 115%; color: #000000;}
+.x-shoppingcart-list-item { font-size: small; padding-top: 10px; padding-bottom: 10px; padding-right: 20px; padding-left: 20px;}
+.x-shoppingcart-list-item:hover { background-color: #F8F8F8;}
+a.labkey-main-menu-link, a.labkey-main-menu-link:visited { color: #000000;}
+a.labkey-main-menu-link:before, a.labkey-main-menu-link:before { content: url(/labkey/_images/cart.png);}
+#textfield-1103-inputEl{word-break: break-word; height:100px; width:600px}
+#textfield-1104-inputEl{word-break: break-word; height:100px; width:600px}
+a#ext-gen89.X-panel-header-text {display:none;}
+span.ext-gen89 { display: none; !important}
+div span.ext-gen89 { display: none; !important}
+.labkey-wp-body-printreq-spec-td td { font-size: 170%; !important }
+#dataregion_column_header_row_PrintRequestAssocSpecimens td div{ font-size: 85%; !important }

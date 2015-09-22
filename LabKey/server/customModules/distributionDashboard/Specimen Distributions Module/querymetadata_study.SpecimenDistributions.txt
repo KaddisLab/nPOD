@@ -1,0 +1,23 @@
+<tables xmlns="http://labkey.org/data/xml">
+  <table tableName="SpecimenDistributions" tableDbType="NOT_IN_DB">
+    <columns>
+      <column columnName="RequestId">
+        <url>#action=editSpecimenRequest&amp;id=${RequestId}&amp;LinkActionValue=%5Bprint%5D</url>
+        <shownInInsertView>true</shownInInsertView>
+        <shownInUpdateView>true</shownInUpdateView>
+        <columnTitle>Print Specimen Request</columnTitle>
+      </column>
+      <column columnName="Dist_ID">
+        <url>#action=editList&amp;schemaName=lists&amp;query.queryName=Table%3A%20Distributions&amp;Dist_ID=${Dist_ID}&amp;SpecimenRequestID=${RequestId}&amp;LinkActionValue=${EditAddDistributionLink}</url>
+      </column>
+      <column columnName="EditRequestLink">
+        <columnTitle>Edit Specimen Request</columnTitle>
+        <url>#action=editSpecimenRequest&amp;id=${RequestId}&amp;LinkActionValue=${EditRequestLink}</url>
+      </column>
+      <column columnName="EditAddDistributionLink">
+        <columnTitle>Edit/Add Distribution Record</columnTitle>
+        <url>#action=editList&amp;schemaName=lists&amp;query.queryName=Table%3A%20Distributions&amp;Dist_ID=${Dist_ID}&amp;SpecimenRequestID=${RequestId}&amp;LinkActionValue=${EditAddDistributionLink}</url>
+      </column>
+    </columns>
+  </table>
+</tables>

@@ -1,0 +1,17 @@
+Property	Label	RangeURI	Format	NotNull	Hidden	MvEnabled	Description
+Dist_ID	Dist ID	http://www.w3.org/2001/XMLSchema#int		TRUE	FALSE	FALSE	
+SpecimenRequestID	SpecimenRequestID	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+pi_id	Pi Id	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+Proj_ID	Proj ID	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+LabConID	Lab Con ID	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+ShipDate	Ship Date	http://www.w3.org/2001/XMLSchema#dateTime		FALSE	FALSE	FALSE	
+CRN	CRN	http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+QuestionaireReturned	Questionaire Returned	http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+ShipmentOK_	Shipment OK_	http://www.w3.org/2001/XMLSchema#boolean		FALSE	FALSE	FALSE	
+ShipmentComments	Shipment Comments	http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+CorrectiveAction	Corrective Action	http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+Comments	Comments	http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+PostFeedback	Post Feedback	http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+PostCorrectiveAction	Post Corrective Action	http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+CommentsForImprovement	Comments For Improvement	http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+FedExTN	Fed Ex TN	http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	

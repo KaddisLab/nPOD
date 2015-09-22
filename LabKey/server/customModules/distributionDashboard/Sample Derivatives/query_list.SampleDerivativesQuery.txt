@@ -1,0 +1,23 @@
+-- Query:  "SampleDerivativesQuery"
+
+SELECT 
+"Table: Sample Derivatives".vialid,
+"Table: Sample Derivatives".VialRowId,
+"Table: Sample Derivatives".inventory_vialID,
+"Table: Sample Derivatives".RequestId RequestIdReference,
+SpecimenRequest.RequestId,
+SpecimenRequest.Status.Label RequestStatus,
+"Table: Sample Derivatives".SampleID,
+"Table: Sample Derivatives".CaseID,
+"Table: Sample Derivatives".AliqID,
+"Table: Sample Derivatives".AliquotNumber,
+"Table: Sample Derivatives".DerivID,
+"Table: Sample Derivatives".DerivNumber,
+"Table: Sample Derivatives".Dist_ID,
+"Table: Sample Derivatives".Dist_ID.CRN,
+"Table: Sample Derivatives".Dist_ID.ShipDate,
+"Table: Sample Derivatives".Status,
+"Table: Sample Derivatives".Comments
+FROM 
+   "Table: Sample Derivatives" LEFT OUTER JOIN study.SpecimenRequest
+  ON "Table: Sample Derivatives".RequestId = SpecimenRequest.RequestId;

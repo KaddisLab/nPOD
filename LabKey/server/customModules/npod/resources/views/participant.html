@@ -1,0 +1,144 @@
+<style type="text/css">
+
+    .labkey-nav-trail {
+        margin-left: auto;
+        margin-right: auto;
+        width : 974px;
+    }
+
+    div.wrapper {
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: -10px;
+        width : 974px;
+    }
+
+    div.wrapper .x4-panel-body {
+        background-color: transparent;
+    }
+
+    .blockwrapper {
+        margin-left: auto;
+        margin-right: auto;
+        width : 974px;
+        display: block;
+    }
+
+    #maininfo {
+        width : 646px;
+        float : left;
+    }
+
+    #subinfo {
+        float : left;
+        width : 318px;
+        margin-left: 10px;
+    }
+
+    div.main {
+        background-color: white;
+        padding: 10px 20px 20px 20px;
+        margin-top: 10px;
+        box-shadow: 0 1px 1px rgba(0,0,0,0.15), -1px 0 0 rgba(0,0,0,0.06), 1px 0 0 rgba(0,0,0,0.06), 0 1px 0 rgba(0,0,0,0.12);
+    }
+
+    div.main h2 {
+        display: inline-block;
+        text-transform: uppercase;
+        font-weight: normal;
+        background-color: #126495;
+        color: white;
+        font-size: 13px;
+        padding: 9px 20px 7px 20px;
+        margin-top: -20px;
+        margin-left: -20px;
+    }
+
+    div.main h3 {
+        text-transform: uppercase;
+        font-size: 14px;
+        font-weight: normal;
+        padding: 10px 0px 10px 50px;
+        border-bottom: 1px solid darkgray;
+    }
+
+    #demographics-content .detail {
+        font-size: 15px;
+        padding-left: 30px;
+        padding-bottom: 5px;
+    }
+
+    #demographics-content .detail td {
+        font-size: 15px;
+    }
+
+    #demographics-content h3 {
+        margin-bottom: 0.5em;
+        margin-top: 0.5em;
+    }
+
+    #demographics-content td {
+        padding: 3px;
+    }
+
+    #demographics-content td.label,
+    #activity-content td.label,
+    #investigator-content div.label,
+    td.label, div.label {
+        font-size: 10px;
+        color: #a9a9a9;
+        vertical-align: text-top;
+    }
+
+    #activity-content .detail p {
+        margin-top: 12px;
+        font-size: 12px;
+    }
+
+    div.main-body {
+        margin-top: 0.5em;
+    }
+
+    #tissue-content .detail td {
+        font-size: 15px;
+        padding: 3px;
+    }
+
+    .thumb.x-panel-header {
+        background-color: transparent;
+    }
+
+</style>
+<div id="participant-view"></div>
+<script type='text/javascript'>
+    LABKEY.requiresCss("nPOD/imageviewer/ImageViewer.css");
+    LABKEY.requiresExt4ClientAPI(true, function() {
+        LABKEY.requiresScript([
+            'nPOD/imageviewer/ImageViewer.js',
+            'nPOD/Participant.js'
+        ], true, function() {
+
+    var init = function() {
+
+        // Style custom navigation
+        Ext4.get(Ext4.DomQuery.select('td#bodypanel table:nth(1)')[0]).addCls('blockwrapper');
+
+        // 17120: Hide crumb-trail
+        var trail = Ext4.DomQuery.select('div.labkey-crumb-trail');
+        if (trail && trail.length > 0)
+            Ext4.get(trail[0]).setStyle('display', 'none');
+
+        Ext4.QuickTips.init();
+
+        var pview = Ext4.create('Ext.npod.Participant', {
+            renderTo : 'participant-view',
+            subjectID : LABKEY.ActionURL.getParameter('participantId')
+        });
+    };
+
+    Ext4.onReady(init);
+
+        });
+    });
+
+</script>

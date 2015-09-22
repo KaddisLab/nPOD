@@ -1,0 +1,3 @@
+DBCC CHECKIDENT ('[labkeydb-dev-1].[study].[SampleRequest]',  NORESEED);
+DBCC CHECKIDENT ('[labkeydb-dev-1].[study].[SampleRequest]',  RESEED, 2000);
+DBCC CHECKIDENT ('[labkeydb-dev-1].[study].[SampleRequest]',  NORESEED);

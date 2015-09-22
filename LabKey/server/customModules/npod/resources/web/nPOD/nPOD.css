@@ -1,0 +1,79 @@
+body {
+    overflow-y: scroll;
+}
+
+div.wrapper {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -10px;
+    width : 650px;
+}
+
+div.wrapper .x4-panel-body {
+    background-color: transparent;
+}
+
+div.mainpane {
+    width : 646px;
+    margin-top: 15px;
+}
+
+div.main {
+    background-color: white;
+    padding: 10px 20px 20px 20px;
+    margin-top: -1px;
+}
+
+div.main h2 {
+    display: inline-block;
+    text-transform: uppercase;
+    font-weight: normal;
+    background-color: #126495;
+    color: white;
+    font-size: 13px;
+    padding: 9px 20px 7px 20px;
+    margin-top: -20px;
+    margin-left: -20px;
+}
+
+/* Unstained Slides from Blocks */
+table.blockview {
+    width: 100%;
+}
+
+table.blockview th {
+    font-weight: bold;
+}
+
+table.blockview td {
+    vertical-align: top;
+}
+
+div.x4-tab-bar-body-top {
+    background-color: white;
+}
+
+/* Grid View for Slides from Blocks*/
+table.gridview td {
+    border: 1px solid lightgray;
+    text-align: center;
+    padding: 5px;
+}
+
+/* Buttons */
+span.addicon {
+    background-image: url(../_images/partadded.gif) !important;
+}
+
+span.trash {
+    background-image: url(../_images/delete.png) !important;
+}
+
+span.grid {
+    background-image: url(./images/33grid.png) !important;
+    background-size: 18px 18px;
+}
+span.formicon {
+    background-image: url(./images/clipboard.png) !important;
+    background-size: 18px 18px;
+}

@@ -1,0 +1,913 @@
+<div id="npod-extended-request"></div>
+<div id="npod-extended-request-errors" style='color:red; display: block'></div>
+
+<script type="text/javascript">
+
+    var ExtendedRequest = {
+        State : null,
+        Request : null
+    };
+	
+	// Distribution Data for a given Request.
+	var DistributionRequest = {
+		DistId : null, 
+		Request: null,
+		Distribution : null
+	};
+	
+	var SampleDerivatives = null;	
+	var indexedVialDataOnLoad = null;  // Reindexed Extended Request Data against Vial RowId
+
+	// Specify supported Sample Derivative types
+	//
+	//  6/16/2014
+	//	"blocks" - Supported
+	//	"snapfrozen" - Not supported 
+	//	"cell" - Not supported
+	//  
+	//  Full types:   
+	//      var sampleBinTypes = [ "blocks","snapfrozen","cell" ];
+	var sampleBinTypes = [ "blocks" ];
+
+
+	// Aliquot Type 
+	//   Script table reflects LabKey list "List: AliquotType"
+	//   as of 6/24/14.
+	var AliquotType = {
+		"Cells" : "3",
+		"DNA" : "4",
+		"EM-4%PF" : "5",
+		"EM-2%PF-1%G" : "6",
+		"Fresh-15ml media" : "8",
+		"Fresh-50ml media" : "9",
+		"OCT" : "10",
+		"OCT-4% PF" : "11",
+		"Paraffin" : "12",
+		"PBL-DNA use" : "13",
+		"PBMC" : "14",
+		"Plasma" : "15",
+		"Vial" : "16",
+		"Vial RNALater" : "17",
+		"RNA" : "21",
+		"Pack" : "22",
+		"Paraffin-4% PF" : "23",
+		"NBF" : "24"
+	};
+
+	// Sample Type 
+	//   Script table reflects LabKey list "List: SampleType"
+	//   as of 6/24/14.
+	var SampleType = {	
+		"PanHead" : "1",
+		"PanTail" : "2",
+		"PanBody" : "3",
+		"Spleen" : "4",
+		"PLN" : "5",
+		"NonPLN" : "6",
+		"Serum" : "7",
+		"PanOther" : "11",
+		"Pancreas" : "13",
+		"PLN-A" : "14",
+		"PLN-B" : "15",
+		"PLN-C" : "16",
+		"PLN-D" : "17",
+		"PLN-A+B" : "22",
+		"Plasma" : "27",
+		"Duodenum" : "28",
+		"Liver" : "29",
+		"Heart" : "30",
+		"Lung" : "31",
+		"Other" : "32",
+		"Kidney" : "33",
+		"DNA" : "37",
+		"PanUncinate" : "38",
+		"Adrenal" : "39",
+		"Accessory spleen" : "40",
+		"Thymus" : "43",
+		"Vertebral body" : "45",
+		"Iliac Crest" : "46",
+		"Skin" : "48",
+		"Whole blood" : "51",
+		"Eye" : "53",
+		"Stomach" : "54",
+		"Adipose-Pa" : "55",
+		"Lesion" : "56",
+		"AmpVater" : "57",
+		"Cell line" : "58",
+		"Islets" : "59",
+		"TMA" : "60",
+		"Large intestine" : "61",
+		"Pancreatic Artery" : "62",
+		"Abdominal Aorta" : "63",
+		"Tumor" : "64"
+	};
+	
+    LABKEY.requiresCss('nPOD/nPOD.css');
+    LABKEY.requiresExt4Sandbox(true, function() {
+        LABKEY.requiresScript('nPOD/Request.js', true, function() {
+
+        var stateRegister = [];
+		
+        var getRequestId = function() {
+            return parseInt(LABKEY.ActionURL.getParameter('id'));
+        };
+		
+        var getDistributionId = function() {
+	
+			var _returnDistID = null;
+			
+			// Check if non-existant Distribution record
+			if (DistributionRequest.DistId == null || DistributionRequest.DistId == '' ) { 
+				// Return Specimen Request ID.
+				_returnDistID = getRequestId();
+				
+			} else {
+				// Return Distribution ID
+				_returnDistID = DistributionRequest.DistId;
+				
+			}
+			
+            return _returnDistID;
+        };
+		
+        var getRequestURL = function() {
+            return LABKEY.ActionURL.buildURL('study-samples', 'manageRequest', null, { id : getRequestId() });
+        };
+
+        var getRequest = function() {
+            return ExtendedRequest.Request;
+        };
+
+        var setRequest = function(request) {
+            ExtendedRequest.Request = request;
+        };
+
+        var generateHeader = function(title) {
+            return {
+                xtype : 'box',
+                border : false, frame : false,
+                autoEl : {
+                    tag : 'div',
+                    cls : 'main',
+                    html: '<h2>' + title + '</h2>'
+                }
+            }
+        };
+
+        Ext4.define('NPOD.data.Model', {
+            extend : 'Ext.data.Model',
+            fields : [
+                {name : 'Primary Type'}
+            ]
+        });
+
+        var getDefaultCfg = function(xtype, id, samples) {
+            return {
+                id      : id,
+                xtype   : xtype,
+                cls     : 'main',
+                padding : '5 5 5 20',
+                items   : [],
+                samples : samples,
+                state : getState(id)
+            };
+        };
+
+        var getBtnCfg = function() {
+            return {
+                xtype : 'container',
+                cls   : 'mainpane',
+                style : 'text-align: right',
+                items : [
+//                    {
+//                        xtype : 'button',
+//                        text : 'Cancel',
+//                        href : getRequestURL(),
+//                        hrefTarget : '_self'
+//                    },
+                    {
+                        xtype : 'button',
+                        text : 'Save',
+                        margin: '0 0 0 10',
+                        handler : saveState
+                    }
+                ]
+            };
+        };
+
+		
+		var loadDistribution = function(requestRowData) {
+			
+			// Load associated Distribution data for a Request.
+			
+			LABKEY.Query.selectRows({
+                schemaName : 'lists',
+                queryName  : 'Table: Distributions',
+                filterArray: [ LABKEY.Filter.create('SpecimenRequestID', getRequestId()) ],
+                success : function(data) {
+                    if (data.rows && data.rows.length > 0) {
+
+						DistributionRequest.DistId = data.rows[0].Dist_ID;
+						DistributionRequest.Request = requestRowData;
+						DistributionRequest.Distribution = data;
+						
+                    }
+					
+					//alert (JSON.stringify(DistributionRequest));	// Debug
+					
+					SampleDerivatives = loadSampleDerivatives(ExtendedRequest.State);	// 6/19/2014 - Read in associated Sample Derivatives
+
+                },
+                failure : function() {
+                    Ext4.Msg.alert('Configuration required',
+                            'Please contact an Administrator to establish a valid Sample Derivatives configuration.',
+                            function() { window.location = getRequestURL(); }
+                    );
+                }
+            });
+					
+		}
+		
+        var loadSampleDerivatives = function( stateData ) {
+			
+			// Load Sample Derivatives from database for given list of 
+			//	Vial IDs from the Extended Request State data.
+			//  Return Sample Derivatives array.
+			//
+
+			var _SampleDerivData = {};  // Initialize
+			
+			// Read in all Sample Derivative rows for current
+			//    request.
+			//
+			//   -Read in existing PKey and SampleDerivatives data.
+			//   -Should be synchronized with ExtendedSpecimenRequest.
+
+			LABKEY.Query.selectRows({
+                schemaName : 'lists',
+                queryName  : 'Table: Sample Derivatives',
+                filterArray: [ LABKEY.Filter.create('RequestId', getRequestId()) ],
+                success : function(data) {
+                    if (data.rows && data.rows.length > 0) {
+
+						// Read all Sample Derivatives rows.
+						for( i=0; i<data.rows.length; i++) {
+							
+							// TODO:  Consider existing items with
+							//   no VialRowId value.
+							//   Issue on day forward.
+							
+							_SampleDerivData[data.rows[i].VialRowId] = {
+								VialId : data.rows[i].vialid,
+								DerivNumber : data.rows[i].DerivNumber
+							};
+						
+						}
+
+						//Debug
+						//alert ('SampleDerivatives load: (' + getRequestId() + '):  ' + JSON.stringify(_SampleDerivData));	// Debug
+
+                    }
+					
+                },
+                failure : function() {
+                    Ext4.Msg.alert('Configuration required',
+                            'Please contact an Administrator to establish a valid Sample Derivatives configuration.',
+                            function() { window.location = getRequestURL(); }
+                    );
+                }
+            });
+			
+            return _SampleDerivData;
+			
+        };
+		
+		
+        var getState = function(key) {
+            if (ExtendedRequest.State) {
+                return ExtendedRequest.State[key];
+            }
+        };
+
+        var loadState = function(cb, scope) {
+
+            var request  = false,
+                metadata = false;
+
+            var loader = function() {
+                if (cb && request && metadata) {
+                    cb.call(scope || this);
+                }
+            };
+
+            LABKEY.Query.selectRows({
+                schemaName : 'lists',
+                queryName  : 'ExtendedSpecimen',
+                filterArray: [ LABKEY.Filter.create('specimenRequestId', getRequestId()) ],
+                success : function(data) {
+                    if (data.rows && data.rows.length > 0) {
+                        ExtendedRequest.State = Ext4.decode(data.rows[0].state);
+						
+                    }
+                    metadata = true;
+                    loader();
+					
+                },
+                failure : function() {
+                    Ext4.Msg.alert('Configuration required',
+                            'Please contact an Administrator to establish a valid Extended Specimen configuration.',
+                            function() { window.location = getRequestURL(); }
+                    );
+                }
+            });
+
+            var sql = 'SELECT VialRequest.Vial.nPODCaseID, ' +
+                    'VialRequest.Vial.PrimaryType, ' +
+                    'VialRequest.Vial.DerivativeType, ' +
+                    'VialRequest.Vial.RowId, ' +
+                    'VialRequest.Vial.ProtocolNumber ' +
+                    'FROM VialRequest WHERE VialRequest.Request = ' + getRequestId();
+
+            LABKEY.Query.executeSql({
+                schemaName : 'study',
+                sql : sql,
+                requiredVersion : '9.1',
+                success : function(data) {
+                    setRequest(data);
+
+					loadDistribution(data); // 6/19/2014 - SF - Load associated Distribution data.
+
+                    request = true;
+                    loader();
+                },
+                failure : function() {
+                    Ext4.Msg.alert('Request Not Found', 'Failed to load Extended Specimen Request. ID #' + getRequestId());
+                },
+                scope : this
+            });
+        };
+
+        /**
+         * Saves the passed state object for the given extended request
+         * @param state
+         */
+        var saveState = function() {
+            var _state = {};
+
+            var saveSucccess = true;
+
+
+            for (var s=0; s < stateRegister.length; s++) {
+                var reg = Ext4.getCmp(stateRegister[s]);
+                if (reg) {
+                    _state[stateRegister[s]] = reg.getValues();
+                }
+            }
+
+            // encode Extended Specimen Request
+            var encoded = {
+                specimenRequestId : getRequestId(),
+                state : Ext4.encode(_state)
+            };
+			
+			// encode Sample Derivatives
+			//    Based on new State information.   
+			//    Compare against Vial information on load.
+            var operationsSampleDerivatives = getOperationsSampleDerivatives(_state);
+
+			// Determine Insert/Update operation
+			//     Data is synchronized so all operations will be the same.  
+			//       - SampleDerivatives table dependent on ExtendedSpecimenRequest table.
+			var rowOpInsertUpdate = ((ExtendedRequest.State) ? 'update' : 'insert');
+
+			// Combined commands for saveRows()
+			var commandsCombined = [
+						{
+							schemaName : 'lists',
+							queryName : 'ExtendedSpecimen',
+							command : rowOpInsertUpdate,
+							rows : [encoded]
+						}
+					];
+
+            // Compose configuration
+            //   Changed config and API call to use LABKEY.Query.saveRows() method.
+            var cfgExtendedSpecimen = {
+                commands : commandsCombined,
+                success : function(data) {
+                    //ExtendedRequest.State = data.rows[0];    // 06/19/2014 - Changed rows to result per saveRows() method.
+                    //ExtendedRequest.State = data.result[0];	// Result not needed.
+
+                    /* ***************************
+                    // Disable success message.  02/19/15 SF
+                    Ext4.Msg.show({
+                        title : 'Specimen Request',
+                        msg   : 'The request has been updated.',
+                        closable: false,
+                        buttons : Ext4.Msg.OK,
+                        fn : function(b) {
+                            if (b == 'ok') {
+                                window.location = getRequestURL();
+                            }
+                        }
+                    });
+                     *************************** */
+                },
+                failure : function() {
+                    saveSucccess = false;
+                    alert('Failed to insert/update! (Extended Request)');
+
+                    // Error output
+                    errorRequestData ('SaveRows Commands : ' + JSON.stringify(commandsCombined));
+
+                }
+            };
+
+            // Save data to all identified tables.  (Extended Request table)
+            LABKEY.Query.saveRows(cfgExtendedSpecimen);
+
+
+            // Loop and call Delete/Insert/Update commands separately - 02/12/15 sfuertez
+            for (i=0;i< operationsSampleDerivatives.length;i++) {
+
+                if (operationsSampleDerivatives[i].length == 0){
+                    continue;
+                }
+
+                // Compose configuration
+                //   Changed config and API call to use LABKEY.Query.saveRows() method.
+                var cfg = {
+                    commands : operationsSampleDerivatives[i],
+                    success : function(data) {
+                        //ExtendedRequest.State = data.rows[0];    // 06/19/2014 - Changed rows to result per saveRows() method.
+                        //ExtendedRequest.State = data.result[0];	// Result not needed.
+
+                        /* ***************************
+                        // Disable success message.  02/19/15 SF
+                        Ext4.Msg.show({
+                            title : 'Specimen Request',
+                            msg   : 'The request has been updated.',
+                            closable: false,
+                            buttons : Ext4.Msg.OK,
+                            fn : function(b) {
+                                if (b == 'ok') {
+                                    window.location = getRequestURL();
+                                }
+                            }
+                        });
+                          *************************** */
+
+                    },
+                    failure : function() {
+                        saveSucccess = false;
+                        alert('Failed to insert/update! (Sample Derivatives)');
+
+                        // Error output
+                        errorRequestData ('SaveRows Commands : ' + JSON.stringify(commandsCombined));
+
+                    }
+                };
+
+                // 06/19/2014 - Change to use saveRows()
+                // if (ExtendedRequest.State) {
+                //     LABKEY.Query.updateRows(cfg);
+                // }
+                // else {
+                //     LABKEY.Query.insertRows(cfg);
+                // } 
+
+                // Save data to all identified tables. (Sample Derivatives)
+                LABKEY.Query.saveRows(cfg);
+
+            };
+
+            // Moved success message here.  02/26/15 SF
+            if (saveSucccess) {
+                Ext4.Msg.show({
+                    title : 'Specimen Request',
+                    msg   : 'The request has been updated.',
+                    closable: false,
+                    buttons : Ext4.Msg.OK,
+                    fn : function(b) {
+                        if (b == 'ok') {
+                            window.location = getRequestURL();
+                        }
+                    }
+                });
+            }
+
+        };
+
+        // Bin request samples by Derivative Type
+        // 0 : UNSTAINED
+        // 1 : SNAPFROZEN
+        // 2 : CELLS
+        // 3 : OTHER
+        var getSampleBins = function() {
+
+            var KEYS = {'UNSTAINED': 0, 'SNAPFROZEN': 1, 'CELLS': 2, 'OTHER': 3};
+            var bins = [[],[],[],[]];
+
+            var TYPE_LISTING = {
+                'cells' : 'CELLS',
+                'oct' : 'UNSTAINED',
+                'oct-4% pf' : 'UNSTAINED',
+                'paraffin' : 'UNSTAINED',
+                'paraffin-4% pf' : 'UNSTAINED',
+                'pbmc' : 'CELLS',
+                'vial' : 'SNAPFROZEN',
+                'vial rnalater' : 'SNAPFROZEN'
+            };
+
+            var samples = ExtendedRequest.Request.rows;
+
+            var dType;
+            for (var s=0; s < samples.length; s++) {
+                dType = samples[s].DerivativeType.displayValue.toLowerCase();
+                if (TYPE_LISTING[dType]) {
+                    bins[KEYS[TYPE_LISTING[dType]]].push(samples[s]);
+                }
+                else {
+                    bins[KEYS.OTHER].push(samples[s]);
+                }
+            }
+
+            return bins;
+        };
+
+        var init = function() {
+
+            var sampleBins = getSampleBins();
+
+            var id    = Ext4.id(); // generate ID for primary panel
+            var grpId = Ext4.id(); // generate ID for checbox group
+            var _active = {};
+
+            var types = [
+                {type : 'blocks', label : 'Unstained slides from blocks', checked : true},
+                {type : 'tissue', label : 'Snap-frozen tissue'},
+                {type : 'cells',  label : 'Cells'},
+                {type : 'custom', label : 'Custom'}
+            ];
+
+            for (var a=0; a < types.length; a++) {
+                _active[types[a].type] = !!types[a].checked;
+            }
+
+            var changeTask = new Ext4.util.DelayedTask(function(){
+                var cmp = Ext4.getCmp(id).getComponent('mainpane');
+                if (cmp) {
+                    var type;
+                    for (var t=0; t < types.length; t++) {
+                        type = cmp.getComponent(types[t].type);
+                        _active[types[t].type] ? type.show() : type.hide();
+                    }
+                }
+            });
+
+            var changeTo = function(r, ov, nv) {
+                var grp = Ext4.getCmp(grpId);
+                if (grp) {
+                    var items = grp.items.items;
+                    for (var i=0; i < items.length; i++) {
+                        _active[items[i].xvalue] = items[i].getValue();
+                    }
+                }
+                changeTask.delay(50);
+            };
+
+            var typeItems = [];
+            for (var t=0; t < types.length; t++) {
+                typeItems.push({
+                    boxLabel : types[t].label,
+                    name     : 'requesttype',
+                    xvalue   : types[t].type,
+                    checked  : types[t].checked,
+                    listeners : { change : changeTo }
+                });
+            }
+
+            var requestItems = [];
+
+            // UNSTAINED
+            if (sampleBins[0].length > 0) {
+                requestItems.push({
+                    xtype  : 'panel',
+                    itemId : 'blocks',
+                    cls    : 'mainpane',
+                    hidden : false,
+                    items  : [generateHeader('Unstained slides from blocks'), getDefaultCfg('npodblock', 'blocks', sampleBins[0])]
+                });
+                stateRegister.push('blocks');
+            }
+
+            // SNAPFROZEN
+            if (sampleBins[1].length > 0) {
+                requestItems.push({
+                    xtype  : 'panel',
+                    itemId : 'tissue',
+                    cls    : 'mainpane',
+                    hidden : false,
+                    items  : [generateHeader('Snap-frozen tissue'), getDefaultCfg('npodtissue', 'snapfrozen', sampleBins[1])]
+                });
+                stateRegister.push('snapfrozen');
+            }
+
+            // CELLS
+            if (sampleBins[2].length > 0) {
+                requestItems.push({
+                    xtype  : 'panel',
+                    itemId : 'cells',
+                    cls    : 'mainpane',
+                    hidden : false,
+                    items  : [generateHeader('Cells'), getDefaultCfg('npodcell', 'cell', sampleBins[2])]
+                });
+                stateRegister.push('cell');
+            }
+
+            // OTHER
+            if (sampleBins[3].length > 0) {
+                requestItems.push({
+                    xtype  : 'panel',
+                    itemId : 'custom',
+                    cls    : 'mainpane',
+                    hidden : false,
+                    items  : [generateHeader('Custom'), { html : 'Custom!'}]
+                });
+            }
+
+            requestItems.push(getBtnCfg());
+
+            // Define Panel
+            Ext4.create('Ext.Panel', {
+                id       : id,
+                renderTo : 'npod-extended-request',
+                cls    : 'wrapper',
+                border : false,
+                frame  : false,
+                items  : [{
+                    xtype : 'container',
+                    itemId: 'mainpane',
+                    items : requestItems
+                }]
+            });
+
+        };
+
+        Ext4.onReady(function() {
+            // Initially request state to be loaded
+            loadState(init);
+        });
+
+		
+		function getOperationsSampleDerivatives(stateData) {
+		
+			// stateData - State information in object format.
+		
+			var operationsSampleDerivs = []; 	// Init
+            var opsSampleDerivs_Delete = [];
+            var opsSampleDerivs_Insert = [];
+            var opsSampleDerivs_Update = [];
+
+			var rowsToUpdate = [];
+			var rowsToInsert = [];
+			var rowsToDelete = [];
+
+			var _VialRowId = null;
+			var _DerivId = 7;    // Always "Slide" (7) for Sample Derviatives  - 06/20/14 SF
+			var _DerivNumber = null;
+			var _SampleId = null;
+			var _AliquotId = null;
+
+			// Create rows for insert/update/update
+			//   based on latest data from Extended 
+			//   Specimen Request State
+			//
+			// Scenario Steps:
+			//    -Iterate New State items
+			//        -Exists in OnLoad State? 
+			//            -No, Insert full New State record.
+			//            -Yes, Update only Volume column.
+			//        -Dequeue found OnLoad State item from array.
+			//    -Iterate remaining OnLoad State items. 
+			//     (Existing items have no match with new data.)
+			//        -Delete OnLoad State item from Sample Derivatives.
+			//
+			//    -Compose executeSql() commands based on operation conditions.
+			//    
+			// Record Operation Conditionals:
+			//    Insert - NewState.RowID exists, OnLoadState.RowID not exists.
+			//    Update - NewState.RowID exists, OnLoadState.RowID exists.
+			//    Delete - OnLoadState.RowID exists, NewState.RowID not exists. 
+			//
+			// Format Example:
+			//		{
+			//			schemaName : 'lists',
+			//			queryName : 'Table: Sample Derivatives',
+			//			command : 'update',
+			//			rows : [encodedSampleDerivativesUpdates]
+			//		},
+			//		{
+			//			schemaName : 'lists',
+			//			queryName : 'Table: Sample Derivatives',
+			//			command : 'insert',
+			//			rows : [encodedSampleDerivativesInserts]
+			//		},
+			//		{
+			//			schemaName : 'lists',
+			//			queryName : 'Table: Sample Derivatives',
+			//			command : 'delete',
+			//			rows : [encodedSampleDerivativesDeletes]
+			//		} 
+			//
+
+			//-------------------------------
+			// Insert and Update checks.
+			for( var i = 0; i < sampleBinTypes.length; i++) {
+
+				// Iterate through all objects in Specimen Bin Types
+				for(specimenObjectIter in stateData[sampleBinTypes[i]]) { 
+				
+					_VialRowId = stateData[sampleBinTypes[i]][specimenObjectIter].RowId.value;
+					_DerivNumber = null;
+					_SampleId = null;
+					_AliquotId = null;
+
+					// Save volume based on Sample Bin Type
+					switch(sampleBinTypes[i]) {
+
+						case 'blocks': 
+							if (stateData[sampleBinTypes[i]].hasOwnProperty(specimenObjectIter)) {
+								// Enable Slides from Extended Specimen Request
+								_DerivNumber = stateData[sampleBinTypes[i]][specimenObjectIter].slides;
+							}
+							break;
+
+						case 'snapfrozen': 
+							if (stateData[sampleBinTypes[i]].hasOwnProperty(specimenObjectIter)) {
+								// Disable Vials - Pull from inventory Volume instead of Extended Specimen Request
+								//_DerivNumber = stateData[sampleBinTypes[i]][specimenObjectIter].numvials;
+							}
+							break;
+
+						case 'cell': 
+							if (stateData[sampleBinTypes[i]].hasOwnProperty(specimenObjectIter)) {
+								// Disable Cells - Pull from inventory Volume instead of Extended Specimen Request.
+								//_DerivNumber = stateData[sampleBinTypes[i]][specimenObjectIter].numcells;
+							}
+							break;
+
+						default:
+							//alert('Undefined specimen bin type:  ' + sampleBinTypes[i]);
+							break;
+					}
+					
+					
+					// Dereference RowId from state data by current bin type.
+					// VialRowId exists on load?
+					if (SampleDerivatives[_VialRowId])  {
+						// Yes, check if any changes?
+						
+						if (SampleDerivatives[_VialRowId].DerivNumber != _DerivNumber) {
+							// Yes, Update associated SampleDerivative  			
+							//    -vialid (PK)
+							//    -DerivNumber (New Derivative Number)
+							
+							rowsToUpdate.push (	
+								{
+									vialid : SampleDerivatives[_VialRowId].VialId, 
+									DerivNumber : _DerivNumber
+								}
+								
+							);
+
+							
+						}
+						
+						// Remove row from SampleDerivatives array on-load after evaluation.
+						//SampleDerivatives.splice(SampleDerivatives.indexOf(_VialRowId),1);
+						//SampleDerivatives[_VialRowId] = undefined;
+						delete SampleDerivatives[_VialRowId];
+						
+					} else {
+						// No, Insert associated SampleDerivative:  
+
+						//-------------------------------
+						// Gather vial request information.
+						_SampleId = SampleType[stateData[sampleBinTypes[i]][specimenObjectIter].PrimaryType.displayValue];
+						_AliquotId = AliquotType[stateData[sampleBinTypes[i]][specimenObjectIter].DerivativeType.displayValue];
+						
+						
+						//-------------------------------
+						// Add new Sample Derivative
+						rowsToInsert.push (
+							{
+								VialRowId : _VialRowId,
+								CaseID : stateData[sampleBinTypes[i]][specimenObjectIter].nPODCaseID.value,
+								SampleID : _SampleId,
+								AliqID : _AliquotId, 
+								AliquotNumber : stateData[sampleBinTypes[i]][specimenObjectIter].ProtocolNumber.value, 
+								DerivID : _DerivId,
+								DerivNumber : _DerivNumber,
+                                RequestId : getRequestId(),
+                                Dist_ID : getDistributionId(),
+								Status : 'Past'
+							}
+						);	
+					}
+				}
+			}
+			
+			//DEBUG
+			//alert("Rows to Update:  " + JSON.stringify(rowsToUpdate));
+			//alert("Rows to Insert:  " + JSON.stringify(rowsToInsert));
+			//alert("SampleDerivatives after update checks:  " + JSON.stringify(SampleDerivatives));
+			
+			//-------------------------------
+			// Deletion Check
+			//  -Add vialid to row list.
+			//  -Remove row from SampleDerivatives array on-load.
+
+			// Iterate through remaining Sample Derivative rows
+			//    which will be deleted.
+			for(sampleDerivVialIter in SampleDerivatives) {
+				// Valid object for the reference? 
+				if (SampleDerivatives.hasOwnProperty(sampleDerivVialIter)) {
+					// Yes, add to delete list.
+					rowsToDelete.push (	
+						{
+							vialid : SampleDerivatives[sampleDerivVialIter].VialId
+						}
+					);
+				}
+			}
+			
+			//DEBUG
+			//alert("Rows to Delete:  " + JSON.stringify(rowsToDelete));
+
+			//-------------------------------
+			// Compose Commands configurations for Query.saveRows().
+
+			// Update
+			if( rowsToUpdate.length > 0 ) {
+                opsSampleDerivs_Update.push (
+					{
+						schemaName : 'lists',
+						queryName : 'Table: Sample Derivatives',
+						command : 'update',
+						rows : rowsToUpdate
+					}
+				);
+			}
+
+			// Insert
+			if( rowsToInsert.length > 0 ) {
+                opsSampleDerivs_Insert.push (
+					{
+						schemaName : 'lists',
+						queryName : 'Table: Sample Derivatives',
+						command : 'insert',
+						rows : rowsToInsert
+					}
+				);
+			}
+			
+			// Delete
+			if( rowsToDelete.length > 0 ) {
+                opsSampleDerivs_Delete.push (
+					{
+						schemaName : 'lists',
+						queryName : 'Table: Sample Derivatives',
+						command : 'delete',
+						rows : rowsToDelete
+					} 
+				);
+			}
+			
+			//DEBUG
+			//alert("Operations SampleDerivs:  " + JSON.stringify(operationsSampleDerivs));
+            operationsSampleDerivs.push(opsSampleDerivs_Delete);
+            operationsSampleDerivs.push(opsSampleDerivs_Insert);
+            operationsSampleDerivs.push(opsSampleDerivs_Update);
+
+			return operationsSampleDerivs;
+			
+		};
+
+		function errorRequestData(errorInfo) {
+			
+			// Display error conditions
+
+			document.getElementById('npod-extended-request-errors').innerHTML = 
+				'<P>' 
+				+ '<strong>Extended Specimen Request Error</strong><BR>'
+				+ 'Extended specimen request error. Please notify administrator.<BR><BR><BR>'
+				+ '<strong>Error Info: </strong>' + errorInfo + '<BR>'
+				+ '<BR>'
+				+ '<strong>Page URL: </strong><BR>' + window.location + '<BR>'
+				+ '</P>';
+		};
+		
+      });
+   });
+</script>

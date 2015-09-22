@@ -1,0 +1,14 @@
+<tables xmlns="http://labkey.org/data/xml">
+  <table tableName="SpecimenEmail" tableDbType="NOT_IN_DB">
+    <columns>
+      <column columnName="TubeType">
+        <dimension>true</dimension>
+        <fk>
+          <fkDbSchema>lists</fkDbSchema>
+          <fkTable>List: Sample_Status</fkTable>
+          <fkColumnName>Tube_Type</fkColumnName>
+        </fk>
+      </column>
+    </columns>
+  </table>
+</tables>

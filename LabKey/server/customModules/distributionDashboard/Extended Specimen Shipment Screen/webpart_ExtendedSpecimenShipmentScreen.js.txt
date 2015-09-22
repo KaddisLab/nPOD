@@ -1,0 +1,572 @@
+<div id='errorDiv' style='color:red; display: block'></div>
+
+<div id='specimenRequestDiv'>
+
+	<table style='width: 700px'>
+		<tr>
+			<td><div id='specimenRequestHeaderDiv'></div></td>
+			<td style='vertical-align: bottom'>
+				<div id='rightSideLinks' style='text-align: left'>
+					<input id='btnPrint' type='button' style='font-size:85%' value='Print Request' onclick='window.print(); return false;' disabled=true>
+					<input id='btnEditRequest' type='button' style='font-size:85%' value='Edit Request' onclick='redirectEditRequest();  window.location=unescape(LABKEY.ActionURL.getParameter("returnUrl")); return false;' disabled=true>
+					<input id='btnCloseBack' type='button' style='font-size:85%; width:57px' value='Close' onclick='window.location=unescape(LABKEY.ActionURL.getParameter("returnUrl")); return false;' >
+				</div>
+			</td>
+		</tr>
+	</table>
+
+	<div id='specimenRequestSummaryDiv' style="display: block;">
+
+		<table cellspacing="20">
+			<thead>
+			
+			<tr class="labkey-wp-header">
+				<th align="left">Request Information</th>
+				<th align="left">Distribution Record Information</th>
+			</tr>
+			</thead>
+
+			<tbody>
+			<tr>
+				<td valign="top" style="max-width: 450px">  <!-- Request Information -->
+					<table>
+						<tbody>
+						<tr>
+							<th valign="top" align="right">Requester</th>
+							<td><SPAN id='specimenRequestSummary-CreatedBy'/></td>
+						</tr>
+						<tr>
+							<th valign="top" align="right">Requesting Location</th>
+							<td><SPAN id='specimenRequestSummary-RequestingLocation'/></td>
+						</tr>
+						<tr>
+							<th valign="top" align="right">Request Date</th>
+							<td><SPAN id='specimenRequestSummary-CreatedDate'/></td>
+						</tr>
+						<tr>
+							<th valign="top" align="right">Description</th>
+							<td><SPAN id='specimenRequestSummary-Description'>#Comments#</SPAN></td>
+						</tr>
+						<tr>
+							<th valign="top" align="right">Status</th>
+							<td><SPAN id='specimenRequestSummary-Status'/></td>
+						</tr>
+						</tbody>
+					</table>
+				</td>
+
+				
+				<td valign="top" style="max-width: 450px"> <!-- Distribution Record Information -->
+					<table>
+						<tbody>
+						<tr>
+							<th valign="top" align="right">PI ID</th>
+							<td><SPAN id='distSummary-PiId'/></td>
+						</tr>
+						<tr>
+							<th valign="top" align="right">Project Name</th>
+							<td><SPAN id='distSummary-ProjId'/></td>
+						</tr>
+						<tr>
+							<th valign="top" align="right">Lab Contact</th>
+							<td><SPAN id='distSummary-LabConId'/></td>
+						</tr>
+						<tr>
+							<th valign="top" align="right">CRN</th>
+							<td><SPAN id='distSummary-CRN'></SPAN></td>
+						</tr>
+						<tr>
+							<th valign="top" align="right">FedEx Tracking</th>
+							<td><SPAN id='distSummary-FedExTN'/></td>
+						</tr>
+						</tbody>
+					</table>
+				</td>
+				
+			</tr>
+			
+			</tbody>
+		</table>
+	
+	</div>
+
+	<div id='specimenRequestDataDiv'/>
+
+</div>
+
+
+<script type="text/javascript">
+
+        var getRequestId = function() {
+            return parseInt(LABKEY.ActionURL.getParameter('id'));
+        };
+
+	// Retrieve identified Specimen Request
+
+	var jsonSpecimenRequest;	// Identified Specimen Request
+	var jsonSpecimenData;		// Associated Specimen Request Data
+	var sqlSpecimenRequest;
+	var sqlSpecimenData;
+	var specimenRequestId;		// Specimen Request ID
+
+	// Determine Specimen Request ID
+	specimenRequestId = getRequestId();
+	
+	sqlSpecimenRequest = 'SELECT  \
+		 \
+		SpecimenRequest.RequestId, \
+		SpecimenRequest.Status.Label AS Status, \
+		SpecimenRequest.Destination.Label AS Destination, \
+		SpecimenRequest.CreatedBy.DisplayName as CreatedBy, \
+		SpecimenRequest.Created, \
+		SpecimenRequest.Comments, \
+		 \
+		Dist.Dist_ID, \
+		Dist.pi_id.fullname AS PiFullName, \
+		Dist.Proj_ID.ProjectTitle AS ProjectTitle, \
+		Dist.LabConID.labfullname AS LabFullName, \
+		Dist.ShipDate, \
+		Dist.CRN, \
+		Dist.QuestionaireReturned, \
+		Dist.ShipmentOK_, \
+		Dist.ShipmentComments, \
+		Dist.CorrectiveAction, \
+		Dist.Comments AS Dist_Comments, \
+		Dist.PostFeedback, \
+		Dist.PostCorrectiveAction, \
+		Dist.CommentsForImprovement, \
+		Dist.FedExTN \
+		/* ,Dist.SpecimenRequestID */ \
+		 \
+		FROM SpecimenRequest FULL JOIN lists."Table: Distributions" Dist \
+		    ON SpecimenRequest.RequestId = Dist.SpecimenRequestID \
+		WHERE SpecimenRequest.RequestId = \'' + specimenRequestId + '\'';
+
+
+	//alert('sqlSpecimenRequest:  ' + sqlSpecimenRequest);
+
+	// Query identified Specimen Request
+	LABKEY.Query.executeSql({
+		schemaName: 'study',
+		query: 'SpecimenRequest',
+		sql: sqlSpecimenRequest,
+		successCallback: getSpecimenRequest,
+		failure: errorRequestData
+	});
+
+
+	function getSpecimenRequest(data)
+	{
+
+		//errorRequestData(JSON.stringify(data));
+		//return false;
+
+		// Retrieve first Specimen Request
+		var i = 0;
+		
+		var requestId = data.rows[i].RequestId;
+		var status = data.rows[i].Status;
+		var destination = data.rows[i].Destination;
+		var createdBy = data.rows[i].CreatedBy;
+		var createdDate = data.rows[i].Created;	
+		var comments = (data.rows[i].Comments).replace(/\n/g, "<br />");  // Replace \n with <br>
+	
+
+		// Header		
+		document.getElementById('specimenRequestHeaderDiv').innerHTML =  
+			'<H1>Specimen Request:  ' + requestId + '</H1>';
+
+		// Update Request Summary data
+		document.getElementById('specimenRequestSummary-Status').innerHTML = status;
+		document.getElementById('specimenRequestSummary-RequestingLocation').innerHTML = destination ;
+		document.getElementById('specimenRequestSummary-CreatedBy').innerHTML = createdBy;
+		document.getElementById('specimenRequestSummary-CreatedDate').innerHTML = createdDate;
+		document.getElementById('specimenRequestSummary-Description').innerHTML = comments;
+		
+		// Distribution Summary data
+		var distId = data.rows[i].Dist_ID;
+		var piFullName = data.rows[i].PiFullName;
+		var projectTitle = data.rows[i].ProjectTitle;
+		var labFullName = data.rows[i].LabFullName;
+		var crn = data.rows[i].CRN;
+		var fedExTN = data.rows[i].FedExTN;
+
+
+		// Distribution data available?
+		if (distId != null) {
+
+			// Yes, display
+
+			// Update Distribution Summary data
+			document.getElementById('distSummary-PiId').innerHTML = piFullName;
+			document.getElementById('distSummary-ProjId').innerHTML = projectTitle;
+			document.getElementById('distSummary-LabConId').innerHTML = labFullName;
+			document.getElementById('distSummary-CRN').innerHTML = crn;
+
+			// Fed Ex TN available?
+			if (fedExTN != null) {
+
+				if (fedExTN.toLowerCase().indexOf('http') > -1) { 
+					// Yes, compose Fed Ex TN Link.
+				
+					// Create FedEx Tracking Number Link
+					var fedexParams = fedExTN.split('?')[1].split('&');
+					var fedexHMap = {};
+		
+					// Create hash map of parameters (key/value pairs)
+					for (var i = 0; i < fedexParams .length; i++) {
+						pair = fedexParams [i].split('=');
+						fedexHMap [pair[0]] = pair[1];		
+					}
+					
+					// Extract Fed Ex TN
+					var fedExTN_numbers = fedexHMap['tracknumbers'] ;
+					//alert(fedExTN_numbers );
+		
+					// Build Fed Ex TN link.
+					fedExTN = '<a href="' + fedExTN + '" target="_blank">' + fedExTN_numbers + '</a>';
+				}
+			}		
+
+			// Populate  Fed Ex TN if available.
+			document.getElementById('distSummary-FedExTN').innerHTML = fedExTN;
+
+
+		} else {
+			// No, display distribution info note.
+
+			// Update Distribution Summary data
+			document.getElementById('distSummary-PiId').innerHTML = '[No Distribution information available.]';
+
+		}
+
+		// Enable buttons
+		document.getElementById('btnPrint').disabled = false;
+		document.getElementById('btnEditRequest').disabled = false;
+
+	};
+
+
+	function errorRequestData(errorInfo) {
+		
+		// Display error conditions
+
+		document.getElementById('errorDiv').innerHTML = 
+			'<P>' 
+			+ '<strong>Specimen Request Error</strong><BR>'
+			+ 'Specimen request lookup error. Please notify administrator.<BR><BR><BR>'
+			+ '<strong>Error Info: </strong>' + JSON.stringify(errorInfo) + '<BR>'
+		 	+ '<BR>'
+			+ '<strong>Page URL: </strong><BR>' + window.location + '<BR>'
+			+ '</P>';
+	};
+
+</script>
+
+
+<script type="text/javascript">
+
+	function redirectEditRequest() {
+
+		// Redirect user to Edit Specimen Request
+
+		url = LABKEY.ActionURL.buildURL(
+			'study-samples', 
+			'manageRequest', 
+			LABKEY.ActionURL.getContainer(), 
+			{
+				returnUrl: window.location,
+				id: getRequestId()
+			} 
+			);
+	
+		//alert(url);
+
+		// Redirect user to URL
+		//window.location = url;
+
+		// Redirect alternative, open popup to URL.
+		window.open(url,'_blank','menubar=no, toolbar=no, top=0, left=0, location=no, ' 
+			+ 'height=' + screen.height + ', width=' + screen.width );
+
+	}
+
+</script>
+
+
+
+<script type="text/javascript">
+
+
+	// Retrieve associated Specimen data for the identified Request
+
+	// Determine Specimen Request ID
+	specimenRequestId = getRequestId();
+	
+
+	// Retrieve Extended Specimen Data for this Request
+	// ...
+
+	// Decompose "State" data for the 
+	//  Extended Specimen information (i.e. Block, Slide, etc. information)
+	// ...
+
+	// Retrieve associated Vial Request information 
+	//  embedded along with Extended Specimen data.
+
+	var _deprecated__sqlVialRequest = 'SELECT  \
+		 \
+		VialRequest.Vial.nPODCaseID, \
+		VialRequest.Vial.nPODCaseID.DataSet.Demographics.DonorType, \
+		VialRequest.Vial.PrimaryType as SampleType, \
+		VialRequest.Vial.DerivativeType as AliquotType, \
+		VialRequest.Vial.ProtocolNumber as "Block Nbr", \
+		\
+		CASE WHEN (VialRequest.Vial.Volume IS NOT NULL) \
+		THEN \
+			(\'VID-\' || CAST(VialRequest.Vial.RowId as VARCHAR) \
+				|| \'-Vol-\' || CAST(VialRequest.Vial.Volume as VARCHAR) ) \
+		ELSE \
+			(\'VID-\' || CAST(VialRequest.Vial.RowId as VARCHAR) \
+				|| \'-Vol-none\' ) \
+		END \
+			AS Vials, \
+		\
+		VialRequest.Vial.Fr_Level1 as Rack, \
+		VialRequest.Vial.Fr_Level2 as Box, \
+		VialRequest.Vial.Fr_Container as Row, \
+		VialRequest.Vial.Fr_Position as Column \
+		 \
+		FROM VialRequest \
+		 \
+		WHERE Request = \'' + specimenRequestId + '\'';
+
+	//alert(_deprecated__sqlVialRequest);
+
+	//--------------------------------------
+	// Grid Display functions
+
+	var qwp1 = new LABKEY.QueryWebPart({
+		renderTo: 'specimenRequestDataDiv',
+		title: 'Associated Specimens',
+		schemaName: 'study',
+		queryName: 'PrintRequestSpecimens',
+		filters: [
+			LABKEY.Filter.create('RequestId', specimenRequestId)
+			],
+		buttonBar: {
+			position: 'none',
+			includeStandardButtons: false, 
+			items: [		  
+				{text: 'Test', onClick: "return false;"}
+			]
+		},
+
+		bodyClass: 'labkey-wp-body-printreq-spec-td',
+		dataRegionName: 'PrintRequestAssocSpecimens',
+		showUpdateColumn: true,
+		showInsertNewButton: true,
+		showRecordSelectors: false,
+		
+		showDetailsColumn: false,
+
+		showBorders: true,
+		showSurroundingBorder: true,
+		linkTarget: '_self',
+	});
+
+	// Setup post table render functions.
+	qwp1.on("render", onRender);
+
+	function onRender()
+	{
+	
+		//--------------------------------------
+		// Update Slide/Cell/Vial values in grid
+	
+		var jsonExtendedRequestState;
+		var hmapVialVolume;  // Reindexed Vial to Volume Hash Map
+		
+		// Query Extended Specimen Request data
+		LABKEY.Query.selectRows({
+			schemaName : 'lists',
+			queryName  : 'ExtendedSpecimen',
+			filterArray: [ LABKEY.Filter.create('specimenRequestId', getRequestId()) ],
+			success : readExtendedSpecimenRequest,
+			failure : function() {
+					alert('Configuration required.  Please contact an Administrator to establish a valid Extended Specimen configuration.'); 
+				}
+		});
+		
+		// Read in Extended Specimen Request
+		function readExtendedSpecimenRequest(data) {
+	
+			if (data.rows && data.rows.length > 0) {
+
+				// Read in JSON format
+				jsonExtendedRequestState = JSON.parse(data.rows[0].state);
+				// alert(JSON.stringify(jsonExtendedRequestState));
+
+				// Reindex values to Vial/Volume pairs.
+				hmapVialVolume = getVialIdToVolumeHashMap(jsonExtendedRequestState);
+	
+				// Debug - Display Extended Request read from DB.
+				//errorRequestData(hmapVialVolume);
+				
+			}
+	
+			//------------------------------------
+			// Retrieve Associated Specimens HTML table.
+			// 	Need to check generated ID after any UI QueryWebPart changes.
+			//
+			// 	06/11/14 - ID: "dataregion_aqwp3" when rendered.
+			//
+				
+			// Obtain table object
+			var tableAssociatedSpecimens = document.getElementById('dataregion_PrintRequestAssocSpecimens');
+
+			// Debug	
+			//errorRequestData(escape(tableAssociatedSpecimens.parentNode.innerHTML));		
+			//alert('row count:  ' + tableAssociatedSpecimens.rows.length);
+	
+
+			// Evaluate Grid table for Extended Specimen data.
+			//	**Note these values need to be examined whenever 
+			//	  table/grid change occurs.
+			//
+			//	Vial Slide Tag Format:   "VID-[VialID]-Vol-[Volume]"
+			//
+			var firstValueRow = 4;
+			var targetCellPosition = 5;
+			var vialIdPrefix = 'VID-';	
+			var volumePrefix = '-Vol-';	
+			var volumePrefixPosition;
+			var targetCell;
+			var targetCellNewVolume;
+			var currentBlockVolume;
+			var targetCellVialId;
+
+			// Review each table row
+			for (var i = firstValueRow ; i < tableAssociatedSpecimens.rows.length; i++) {
+
+				targetCell = tableAssociatedSpecimens.rows[i].cells[targetCellPosition];
+				targetCellNewValue = '';
+
+				//alert('cell count on this row (' + i + '):  ' + tableAssociatedSpecimens.rows[i].cells.length);
+
+				// Adjust cell value at target cell.
+				//    (Cell position (targetCellPosition) that begins with "VID-" prefix)
+				if(targetCell.innerHTML.indexOf(vialIdPrefix) == 0) {
+
+
+					//alert('cell value position (5) on this row (' + i + '):  ' + targetCell.innerHTML);
+
+					// Position of VialID and Volume Prefix
+					volumePrefixPosition = targetCell.innerHTML.indexOf(volumePrefix);
+
+					// Retrieve Vial ID from string.
+					targetCellVialId = targetCell.innerHTML.substring(vialIdPrefix.length, volumePrefixPosition);
+
+					// Retrieve Volume value from string. 
+					currentBlockVolume =  targetCell.innerHTML.substring(volumePrefixPosition
+						+ volumePrefix.length, targetCell.innerHTML.length);
+					
+					//alert (targetCell.innerHTML + '||' + targetCell.innerHTML.indexOf(vialIdPrefix) +  '||' +targetCellVialId  + '||' + volumePrefixPosition + '||' + currentBlockVolume + '||' + targetCell.innerHTML.length );
+					//alert(targetCellVialId + "||" + targetCellVialId.length);
+
+					targetCellNewVolume = getExtendedSpecimenVolume(targetCellVialId, currentBlockVolume);
+
+					// Rewrite volume information to HTML.  (Note:  Comment to debug)
+					targetCell.innerHTML = targetCellNewVolume;
+
+				}
+			}		
+	
+			//------------------------------------
+		
+		}
+		
+		function getExtendedSpecimenVolume(vialId, mainBlockVolume) {
+		
+			// Note:  jsonExtendedRequestState is global 
+			//        to this function, which is inside onRender().
+			
+			var returnExtSpecVolume = mainBlockVolume.trim();		// Initialize return value with current block volume.
+			var lookupVialId = vialId.trim();	// Initialize Vial ID lookup
+			var extendedSpecVolumeForVial = null;
+			var specimenItem;
+
+
+			//-----------------------------
+			// Determine Extended Specimen Volume for a given Vial ID
+			//   within Extended Specimen State array.  
+			//   (array variable:  jsonExtendedRequestState)
+
+			// Vial/Volume map defined?
+			if (hmapVialVolume) {
+				// Yes, return volume for a vial 
+				extendedSpecVolumeForVial = hmapVialVolume[lookupVialId];			
+			
+			} else {
+			
+				// ** TODO:  Determine which Aliquot Types require 
+				//           Extended Specimen data:
+				//               Block Slides?
+				//               Vials?
+				//               Cells?
+				
+				returnExtSpecVolume = 'none';
+				extendedSpecVolumeForVial = null;
+			}
+			//-----------------------------
+
+ 			// Check block volume available.
+			if ( (returnExtSpecVolume == 'none' && extendedSpecVolumeForVial == null )
+					|| ( extendedSpecVolumeForVial != null && extendedSpecVolumeForVial.length === 0 ) ){ 
+				// No block volume available from main and no extended spec volume found. 
+				returnExtSpecVolume = '[Qty not specified]';
+				
+			} else if ( extendedSpecVolumeForVial != null ) {
+				// Ext Spec volume found, return volume
+				returnExtSpecVolume = extendedSpecVolumeForVial;
+			} 
+			
+			// Default return existing volume.
+			
+			return returnExtSpecVolume;
+		}
+		
+		
+		function getVialIdToVolumeHashMap(jsonExtSpecReq) {
+
+			// Create reindexed hashmap from Extended Specimen schema
+			//	  hashmap format:  [VialRowId]:[Volume]
+			//    This improves performance by reindexing one time 
+			//    and use an index reference for each Vial ID.  
+			//    This is used instead of checking the json schema
+			//    each time a vial/volume lookup is needed.
+			
+			var specimenBinIter = null;
+			var specimenObjectIter = null;
+			var vialVolumeHmap = {};
+						
+			//errorRequestData(jsonExtSpecReq);
+			
+			// Iterate through all objects in Specimen Bin Types
+			//		Available types: 'blocks', 'snapfrozen', 'cell'
+			//		*Supported slide volume types:  'blocks'
+
+			// "blocks"
+			for (specimenObjectIter in jsonExtSpecReq.blocks) { 
+				
+				// Enable Slides from Extended Specimen Request
+				vialVolumeHmap[jsonExtSpecReq.blocks[specimenObjectIter].RowId.value] = jsonExtSpecReq.blocks[specimenObjectIter].slides;
+				
+			}
+			
+			return vialVolumeHmap;
+		}
+		
+	}  // onRender()
+
+</script>

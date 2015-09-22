@@ -1,0 +1,12 @@
+
+View Requirements for Specimen Distributions
+
+Sort
+	RequestID Desc
+	Dist_ID Desc
+	
+Filters:
+	(none)
+	
+	
+	

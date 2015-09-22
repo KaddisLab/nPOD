@@ -1,0 +1,43 @@
+SELECT 
+
+  CASE WHEN (SpecimenRequest.RequestId IS NOT NULL)
+  THEN
+  	'[edit]'
+  ELSE
+  	''
+  END
+  AS EditRequestLink,
+  
+SpecimenRequest.RequestId,
+SpecimenRequest.Status,
+SpecimenRequest.Destination,
+SpecimenRequest.CreatedBy,
+SpecimenRequest.Created,
+
+  CASE WHEN (Dist.Dist_ID IS NOT NULL)
+  THEN
+  	'[edit]'
+  ELSE
+  	'[add]'
+  END
+  as EditAddDistributionLink,
+   
+Dist.Dist_ID,
+Dist.pi_id,
+Dist.Proj_ID,
+Dist.LabConID,
+Dist.ShipDate,
+Dist.CRN,
+Dist.QuestionaireReturned,
+Dist.ShipmentOK_,
+Dist.ShipmentComments,
+Dist.CorrectiveAction,
+Dist.Comments,
+Dist.PostFeedback,
+Dist.PostCorrectiveAction,
+Dist.CommentsForImprovement,
+Dist.FedExTN
+/* ,Dist.SpecimenRequestID */
+FROM SpecimenRequest FULL JOIN lists."Table: Distributions" Dist
+ON SpecimenRequest.RequestId = Dist.SpecimenRequestID;
+/* ORDER BY SpecimenRequest.RequestId,Dist.Dist_ID; */

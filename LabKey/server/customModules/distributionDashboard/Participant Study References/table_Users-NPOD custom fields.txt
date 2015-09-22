@@ -1,0 +1,19 @@
+NPOD Users table fields
+
+Property	Label	RangeURI	Format	NotNull	Hidden	MvEnabled	Description
+FirstName		http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+LastName		http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+Phone		http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+Mobile		http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+Pager		http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+IM		http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+Description		http://www.w3.org/2001/XMLSchema#string		FALSE	FALSE	FALSE	
+
+nPOD_PI	nPOD PI ID	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+nPOD_Lab_Contact_1	nPOD Lab Contact ID (1)	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+nPOD_Lab_Contact_2	nPOD Lab Contact ID (2)	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+nPOD_Lab_Contact_3	nPOD Lab Contact ID (3)	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+nPOD_Lab_Contact_4	nPOD Lab Contact ID (4)	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+nPOD_Project_ID_1	nPOD Project ID (1)	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+nPOD_Project_ID_2	nPOD Project ID (2)	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	
+nPOD_Project_ID_3	nPOD Project ID (3)	http://www.w3.org/2001/XMLSchema#int		FALSE	FALSE	FALSE	

@@ -1,0 +1,60 @@
+.image-preview .thumb-wrap 		/* hover/selection element */
+{
+	padding: 5px;
+    float: left;
+    border: 1px solid #aaaaaa;
+    width : 50%;
+    height : 112px;
+}
+
+.image-preview .thumb 			/* thumbnail element */
+{
+	height:100px; width:125px;
+	border: 1px solid #aaaaaa;
+    padding: 5px;
+}
+
+.image-preview .thumb-img
+{
+    max-width:125px;
+    max-height:100px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.image-preview img.thumb-img:hover {
+    cursor: pointer;
+}
+
+.image-preview .thumb-wrap.x4-view-over
+{
+	border: 1px solid #000000;
+    cursor: pointer;
+}
+
+.image-preview .x4-view-selected .thumb
+{
+    border:  1px solid #000000;
+    background: #DDDDDD
+}
+
+.image-viewer .scaling
+{
+    position:absolute; top:0px; left:0px;
+    font-weight: bold; font-size: 14pt;
+    color: #ffffff;
+    background: #888888; opacity:0.8;
+    padding: 5px;
+    border : solid 2px #444444;
+}
+
+.imgview
+{
+    max-width: 630px;
+    max-height: 473px;
+    margin:auto; /* Required */
+    position:absolute; /* Required */
+    top:0; bottom:0;  /* Aligns Vertically */
+    position: absolute;
+}
