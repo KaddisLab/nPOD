@@ -1,24 +1,24 @@
-nPOD LabKey Installation Version 14.3
+<h1>nPOD LabKey Installation Version 14.3</h1>
 
-Install LabKey baseline configuration
+Install LabKey baseline configuration <br>
 
-Install modules
-        npod.module
-        study.module
-        labkeywebapp - customizations
+Install modules<br>
+<t>npod.module<br>
+        study.module<br>
+        labkeywebapp - customizations<br>
 
-Start application server (Tomcat currently)
+Start application server (Tomcat currently)<br>
 
-Create nPOD Study
+Create nPOD Study<br>
 
-Run Database SQL Scripts
-        Currently implementing only MS SQL Server.
+Run Database SQL Scripts<br>
+        Currently implementing only MS SQL Server.<br>
 
-Install nPOD Schema queries
+Install nPOD Schema queries<br>
 
-Install nPOD Wiki pages.
-        Specimen Distribution
-        Top 10 Charts
+Install nPOD Wiki pages.<br>
+        Specimen Distribution<br>
+        Top 10 Charts<br>
 
-Note unavailable source
-        Study module
+Note unavailable source<br>
+        Study module<br>
