@@ -62,7 +62,6 @@
         - Specimen Distribution
 	- Top 10 Charts
 	- Files
-        - (Under Review)
           - ./server/source/customModules/distributionDashboard/Custom Menus - Shopping Cart/webpart_ShoppingCartMenu.js.txt
           - ./server/source/customModules/distributionDashboard/Extended Specimen Shipment Screen/webpart_ExtendedSpecimenShipmentScreen.js.txt
           - ./server/source/customModules/distributionDashboard/Specimen Distributions Module/security_webpart_DistributionsManagementLinks.js
