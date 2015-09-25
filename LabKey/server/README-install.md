@@ -2,23 +2,20 @@
 
 	
 1.  Install LabKey baseline configuration
+    [https://www.labkey.org/wiki/home/Documentation/page.view?name=config]
   
-    https://www.labkey.org/wiki/home/Documentation/page.view?name=config
-  
-  Note unavailable source
-    - Study module	
-	
-2.  Install modules
-    - npod.module
-    - study.module
-    - labkeywebapp - customizations
-        - labkeyWebapp/clientapi/core/Filter.js
-        - labkeyWebapp/clientapi/core/Filter.js.gz
-        - labkeyWebapp/WEB-INF/lib/api.jar
-        - labkeyWebapp/clientapi_core.min.js
-        - labkeyWebapp/clientapi_core.min.js.gz
-        - labkeyWebapp/WEB-INF/jsp/api_jsp.jar
-        	
+2.  Install modules in LabKey installation folder
+  - modules/ 
+    - npod.module  (Source available)
+    - study.module  (Source unavailable)
+  - labkeywebapp/ - Customizations (non-JavaScript source unavailable)  
+    - labkeyWebapp/clientapi/core/Filter.js
+    - labkeyWebapp/clientapi/core/Filter.js.gz
+    - labkeyWebapp/WEB-INF/lib/api.jar
+    - labkeyWebapp/clientapi_core.min.js
+    - labkeyWebapp/clientapi_core.min.js.gz
+    - labkeyWebapp/WEB-INF/jsp/api_jsp.jar
+
 3. Start Tomcat server and login
 
 4. Create nPOD Study
