@@ -3,7 +3,7 @@
 	
 1.  Install LabKey baseline configuration
 
-    [https://www.labkey.org/wiki/home/Documentation/page.view?name=config]
+    https://www.labkey.org/wiki/home/Documentation/page.view?name=config
   
 2.  Install modules in LabKey installation folder
   - modules/ 
