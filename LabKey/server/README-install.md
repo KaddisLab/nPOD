@@ -2,9 +2,11 @@
 
 	
 1.  Install LabKey baseline configuration
-
-    https://www.labkey.org/wiki/home/Documentation/page.view?name=config
-  
+  - https://www.labkey.org/wiki/home/Documentation/page.view?name=config
+    
+  In order to build the nPOD module, a development environment needs to be set up.  Please refer the LabKey Development references under "Set up a Development Machine"
+  - https://www.labkey.org/wiki/home/Documentation/page.view?name=dev    
+ 
 2.  Install modules in LabKey installation folder
   - modules/ 
     - npod.module  (Source available)
@@ -28,12 +30,15 @@
 
 7. Update Schemas
   - Run Database SQL Scripts
-  - Install nPOD Schema queries
     (Currently supporting only MS SQL Server.)
   - SQL
     - MS SQL Server
         - ./server/source/customModules/distributionDashboard/Specimen Distributions Module/sql_SpecimenRequest-IdentityReseed.txt
         - ./server/source/customModules/distributionDashboard/Extended Specimen Shipment Screen/sql_lists.ExtendedSpecimen-alter-STATE.txt
+
+8. Start Tomcat server and login
+
+9. Install nPOD Schema queries
     - LabKey Schema SQL
         - ./server/source/customModules/distributionDashboard/NPOD Reports/sql_Donor_By_Group_Summary.txt
 
@@ -57,9 +62,7 @@
 
         - ./server/source/customModules/distributionDashboard/Donor Specimen Search/query_study.DonorSpecimenSearch.txt
 
-8. Start Tomcat server and login
-
-9. Install nPOD Wiki pages.
+10. Install nPOD Wiki pages.
         - Specimen Distribution
 	- Top 10 Charts
 	- Files
