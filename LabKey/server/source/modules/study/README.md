@@ -5,39 +5,39 @@ The LabKey Study module was modified to meet the nPOD project requirements.  Bel
  
 1. BaseStudyTable.java  (LabKey base changes)
 
-- dataSetVisibility.jsp (LabKey base changes)
+2. dataSetVisibility.jsp (LabKey base changes)
 
-- SpecimenManager.java
+3. SpecimenManager.java
   - LabKey fixes for Request saves.
   - Max External ID - Used by SpecimenUpdateService
 			
-- SpecimenQueryView.java
+4. SpecimenQueryView.java
   - Specimen Email 
 			
-- SpecimenRequestQueryView.java
+5. SpecimenRequestQueryView.java
   - Specimen Request List availability
     - Admins see all requests
     - Regular users see only their requests
 				
-- SpecimenUpdateService.java
+6. SpecimenUpdateService.java
   - LabKey fixes for Request saves.
 			
-- EditableSpecimenImporter.java
+7. EditableSpecimenImporter.java
   - LabKey fixes for Request saves.
 			
-- SpecimenEvent.java
+8. SpecimenEvent.java
   - LabKey fixes for Request saves.
 			
-- manageRequest.jsp
+9. manageRequest.jsp
   - Show Extended Request information for all users.
 			
-- requestSamples.jsp
+10. requestSamples.jsp
   - Changed Requesting Location to Project Principle Investigator
 			
-- SpecimenController.java
+11. SpecimenController.java
   - Enforce Associated Specimens view.
 			
-- SpecimenUtils.java
+12. SpecimenUtils.java
   - Disable History link on specimen grid view
   - NPOD Create New Request customizations.
   - NPOD Add to Existing Request customizations
